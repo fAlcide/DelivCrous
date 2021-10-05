@@ -1,6 +1,7 @@
 const path = require('path')
 const express = require("express")
 const mongoose = require('mongoose');
+const { title } = require('process');
 
 mongoose.connect('mongodb://localhost:27017/DelivCrous');
 
@@ -8,11 +9,10 @@ const app = express() // starts a new Express app
 
 const pagesDirectory = `${__dirname}/pages` // equivalent to __dirname + '/pages'
 
-const Dish = mongoose.model("Dish", {title:String, picPath:String, description:String, price:Number, alergene:String})
-
-
+const Dish = mongoose.model("Dish", {title:String, description:String, price:Number})
 
 app.use(express.static('public'))
+app.use(express.json())
 
 // GET de l'index
 app.get("/", (req, res) => {
@@ -21,14 +21,19 @@ app.get("/", (req, res) => {
 
 //Ajout d'un plat
 app.post("/dish", (req, res) => {
-    const dish = new Dish({title:"Pizza", picPath:'pic/pizza.jpg', description:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi facere repudiandae reiciendis, laborum natus a ipsum enim impedit nesciunt accusamus itaque consectetur similique, temporibus non autem, nam dolorum culpa et.", price:12, alergene:'E110'})  
+    // res.json(req.body)
+    const dish = new Dish(req.body)  
+    // const dish = new Dish({title:"Burger", description:"Burger sympa", price:"12"})  
     dish.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
+    res.json(dish)
 })
 
-app.delete("/dish:id", (req, res) => {
-    const dish = new Dish({title:"Pizza", picPath:'pic/pizza.jpg', description:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi facere repudiandae reiciendis, laborum natus a ipsum enim impedit nesciunt accusamus itaque consectetur similique, temporibus non autem, nam dolorum culpa et.", price:12, alergene:'E110'})  
-    dish.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
-})
+//Suppression d'un plat
+app.delete("/dish/:id", async (req, res) => {
+    Dish.findOneAndDelete(req.params.id)
+      .then((dish) => res.json(dish))
+      .catch(() => res.status(404).end())
+  })
 
 // GET /adlsfalsdfjk
 app.get("*", (req, res) => {
