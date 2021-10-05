@@ -9,7 +9,11 @@ const app = express() // starts a new Express app
 
 const pagesDirectory = `${__dirname}/pages` // equivalent to __dirname + '/pages'
 
-const Dish = mongoose.model("Dish", {title:String, description:String, price:Number})
+const DishSchema = new mongoose.Schema({title:String, description:String, price:Number})
+const CartSchema = new mongoose.Schema({dishes:[DishSchema]})
+
+const Dish = new mongoose.model("Dish", DishSchema)
+const Cart = new mongoose.model("Cart", CartSchema)
 
 app.use(express.static('public'))
 app.use(express.json())
@@ -26,6 +30,15 @@ app.post("/dish", (req, res) => {
     // const dish = new Dish({title:"Burger", description:"Burger sympa", price:"12"})  
     dish.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
     res.json(dish)
+})
+
+//Ajout d'un Panier
+app.post("/cart", (req, res) => {
+    // res.json(req.body)
+    const cart = new Cart(req.body)  
+    // const dish = new Dish({title:"Burger", description:"Burger sympa", price:"12"})  
+    cart.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
+    res.json(cart)
 })
 
 //Suppression d'un plat
