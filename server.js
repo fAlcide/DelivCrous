@@ -32,6 +32,15 @@ app.post("/dish", (req, res) => {
     res.json(dish)
 })
 
+//Récupére tous les plats
+app.get("/Alldish", (req, res) => {
+    
+  dish = Dish.find().then((p) =>{
+    res.send(p);
+  });
+  
+})
+
 //Ajout d'un Panier
 app.post("/cart", (req, res) => {
     // res.json(req.body)
