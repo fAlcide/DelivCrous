@@ -33,12 +33,19 @@ app.post("/dish", (req, res) => {
 })
 
 //Récupére tous les plats
-app.get("/Alldish", (req, res) => {
+app.get("/allDishes", (req, res) => {
     
   dish = Dish.find().then((p) =>{
     res.send(p);
   });
   
+})
+
+//Récupére un plat selon un id donné
+app.get("/oneDish/:id", (req, res) => {
+  Dish.findById(req.params.id).then((p) =>{
+    res.send(p);
+  });
 })
 
 //Ajout d'un Panier
