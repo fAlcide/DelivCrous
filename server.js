@@ -74,6 +74,16 @@ app.post("/addDishToCart", (req, res) => {
       ).then(() => res.status(201).json({ message: 'Plat ajouté au cart !' }));
     })
   })
+
+//Supression d'un plat avec un id donné dans un panier avec un id donné
+app.post("/addDishToCart", (req, res) => {
+  Dish.findById(req.body.idDish).then((d)=>{
+      Cart.findOneAndUpdate(
+        { _id: req.body.idCart }, 
+        { $pull: { dishes:  req.body.idDish }}
+      ).then(() => res.status(201).json({ message: 'Plat ajouté au cart !' }));
+    })
+  })  
   
  //Récupère tous les les plats d'un id de Cart donnée 
  app.get("/allDishesFromCart/:id", (req, res) => {
@@ -89,21 +99,6 @@ app.delete("/dish/:id", async (req, res) => {
   Dish.findOneAndDelete(req.params.id)
     .then((dish) => res.json(dish))
     .catch(() => res.status(404).end())
-})
-
-//Ajout d'un User 
-app.post("/addUser", (req, res) => {
-    bcrypt.hash(req.body.password, 10)
-      .then(hash => {
-        const user = new User({
-          nom: req.body.nom,
-          password: hash
-        });
-        user.save()
-          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-          .catch(error => res.status(400).json({ error }));
-      })
-      .catch(error => res.status(500).json({ error }));
 })
 
 // GET /adlsfalsdfjk
