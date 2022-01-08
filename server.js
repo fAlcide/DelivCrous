@@ -8,7 +8,7 @@ db = mongoose.connect('mongodb://localhost:27017/DelivCrous');
 
 const app = express() // starts a new Express app
 
-const pagesDirectory = `${__dirname}/pages` // equivalent to __dirname + '/pages'
+const pagesDirectory = `${__dirname}/pages`
 
 //Model Dish
 const Dish = new mongoose.model("Dish", new mongoose.Schema({
@@ -32,9 +32,10 @@ app.use(express.json())
 app.post("/dish", (req, res) => {
   // res.json(req.body)
   const dish = new Dish(req.body)  
-  // const dish = new Dish({title:"Burger", description:"Burger sympa", price:"12"})  
-  dish.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
-  res.status(201).json({ message: 'Plat créé !', dish:dish })
+  dish.save().then(
+    res.status(201).json({ message: 'Plat créé !', dish:dish })
+  )
+  
 })
 
 //Récupére tous les plats
@@ -53,11 +54,10 @@ app.get("/oneDish/:id", (req, res) => {
 
 //Création d'un Panier
 app.post("/cart", (req, res) => {
-    // res.json(req.body)
     const cart = new Cart()  
-    // const dish = new Dish({title:"Burger", description:"Burger sympa", price:"12"})  
-    cart.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
-    res.status(201).json({ message: 'Cart créé !', cart:cart})
+    cart.save().then(
+      res.status(201).json({ message: 'Cart créé !', cart:cart})
+    )
 })
 
 //Récupére un panier selon un id donné
@@ -78,7 +78,7 @@ app.post("/addDishToCart", (req, res) => {
   })
 
 //Supression d'un plat avec un id donné dans un panier avec un id donné
-app.post("/addDishToCart", (req, res) => {
+app.detele("/addDishToCart", (req, res) => {
   Dish.findById(req.body.idDish).then((d)=>{
       Cart.findOneAndUpdate(
         { _id: req.body.idCart }, 
