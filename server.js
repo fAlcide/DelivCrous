@@ -30,12 +30,10 @@ app.use(express.json())
 
 //Création d'un plat
 app.post("/dish", (req, res) => {
-  // res.json(req.body)
   const dish = new Dish(req.body)  
   dish.save().then(
     res.status(201).json({ message: 'Plat créé !', dish:dish })
   )
-  
 })
 
 //Récupére tous les plats
@@ -77,8 +75,8 @@ app.post("/addDishToCart", (req, res) => {
     })
   })
 
-//Supression d'un plat avec un id donné dans un panier avec un id donné
-app.detele("/addDishToCart", (req, res) => {
+//Supression d'un plat avec un id donné d'un panier avec un id donné
+app.post("/removeDishFromCart", (req, res) => {
   Dish.findById(req.body.idDish).then((d)=>{
       Cart.findOneAndUpdate(
         { _id: req.body.idCart }, 
