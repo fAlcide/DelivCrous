@@ -2,7 +2,7 @@ const path = require('path')
 const express = require("express")
 const mongoose = require('mongoose');
 const { title } = require('process');
-var bcrypt = require('bcrypt');
+const { json } = require('express/lib/response');
 
 db = mongoose.connect('mongodb://localhost:27017/DelivCrous');
 
@@ -10,29 +10,31 @@ const app = express() // starts a new Express app
 
 const pagesDirectory = `${__dirname}/pages` // equivalent to __dirname + '/pages'
 
+//Model Dish
+const Dish = new mongoose.model("Dish", new mongoose.Schema({
+  title:String, description:String, price:Number
+}))
 
-const Dish = new mongoose.model("Dish", new mongoose.Schema({title:String, description:String, price:Number}))
-const Cart = new mongoose.model("Cart", new mongoose.Schema({dishes:{
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Dish"
-}}))
-const User = new mongoose.model("User", new mongoose.Schema({nom:String, password:String}))
+//Model Cart
+const Cart = new mongoose.model("Cart", new mongoose.Schema({
+  dishes:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Dish"
+  },
+  state:{type:Number, default:0},
+  adress:{type:String, default:""}
+}))
 
 app.use(express.static('public'))
 app.use(express.json())
 
-// GET de l'index
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve(pagesDirectory,'home.html'))
-})
-
-//Ajout d'un plat
+//Création d'un plat
 app.post("/dish", (req, res) => {
   // res.json(req.body)
   const dish = new Dish(req.body)  
   // const dish = new Dish({title:"Burger", description:"Burger sympa", price:"12"})  
   dish.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
-  res.json(dish)
+  res.status(201).json({ message: 'Plat créé !', dish:dish })
 })
 
 //Récupére tous les plats
@@ -49,17 +51,17 @@ app.get("/oneDish/:id", (req, res) => {
   });
 })
 
-//Ajout d'un Panier
+//Création d'un Panier
 app.post("/cart", (req, res) => {
     // res.json(req.body)
     const cart = new Cart()  
     // const dish = new Dish({title:"Burger", description:"Burger sympa", price:"12"})  
     cart.save().then(res.sendFile(path.resolve(pagesDirectory,'addSuccess.html')))
-    res.json(cart)
+    res.status(201).json({ message: 'Cart créé !', cart:cart})
 })
 
 //Récupére un panier selon un id donné
-app.get("/oneCart/:id", (req, res) => {
+app.get("/cart/:id", (req, res) => {
   Cart.findById(req.params.id).then((p) =>{
     res.send(p);
   });
@@ -81,12 +83,12 @@ app.post("/addDishToCart", (req, res) => {
       Cart.findOneAndUpdate(
         { _id: req.body.idCart }, 
         { $pull: { dishes:  req.body.idDish }}
-      ).then(() => res.status(201).json({ message: 'Plat ajouté au cart !' }));
+      ).then(() => res.status(201).json({ message: 'Plat supprimé du cart !' }));
     })
   })  
   
- //Récupère tous les les plats d'un id de Cart donnée 
- app.get("/allDishesFromCart/:id", (req, res) => {
+//Récupère tous les les plats d'un id de Cart donnée 
+app.get("/allDishesFromCart/:id", (req, res) => {
   Cart.findById(req.params.id).select("dishes").then((p) =>{
     Dish.find().where('_id').in(p.dishes).then((d)=>{
       res.send(d)
@@ -99,6 +101,20 @@ app.delete("/dish/:id", async (req, res) => {
   Dish.findOneAndDelete(req.params.id)
     .then((dish) => res.json(dish))
     .catch(() => res.status(404).end())
+})
+
+//Validation d'un panier
+app.post("/confirmCart", (req, res) => {
+  Dish.findById(req.body.idDish).then((d)=>{
+    Cart.findOneAndUpdate(
+      { _id: req.body.idCart }, 
+      { $push: { state: 1 }}
+    ),
+    Cart.updateOne({_id: req.body.idCart}, {
+      state: 1, 
+      adress: req.body.adress
+  }).then(() => res.status(201).json({ message: 'Panier validé' }));
+  })
 })
 
 // GET /adlsfalsdfjk
