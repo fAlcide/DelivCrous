@@ -44,7 +44,7 @@ app.get("/allDishes", (req, res) => {
 })
 
 //Récupére un plat selon un id donné
-app.get("/oneDish/:id", (req, res) => {
+app.get("/dish/:id", (req, res) => {
   Dish.findById(req.params.id).then((p) =>{
     res.send(p);
   });
