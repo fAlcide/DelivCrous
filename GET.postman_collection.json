@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "8d8c3b7d-465e-4fe8-b8bd-2e0b9c7a8b01",
+		"name": "GET",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Panier",
+			"item": [
+				{
+					"name": "Get one cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/cart/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"cart",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61d9ab7dcf792ce70872d37e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tous les plats d'un cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/allDishesFromCart/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"allDishesFromCart",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61d9ab7dcf792ce70872d37e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plat",
+			"item": [
+				{
+					"name": "Tous les plats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/allDishes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"allDishes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find on bby id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dish/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dish",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61d9ab4ccf792ce70872d378"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -12,7 +12,7 @@ const pagesDirectory = `${__dirname}/pages`
 
 //Model Dish
 const Dish = new mongoose.model("Dish", new mongoose.Schema({
-  title:String, description:String, price:Number
+  title:String, description:String, price:Number, allergens:String
 }))
 
 //Model Cart
@@ -85,7 +85,7 @@ app.post("/removeDishFromCart", (req, res) => {
     })
   })  
   
-//Récupère tous les les plats d'un id de Cart donnée 
+//Récupère tous les les plats d'un cart avec un id donnée 
 app.get("/allDishesFromCart/:id", (req, res) => {
   Cart.findById(req.params.id).select("dishes").then((p) =>{
     Dish.find().where('_id').in(p.dishes).then((d)=>{
